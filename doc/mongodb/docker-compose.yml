@@ -1,0 +1,62 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    privileged: true
+    #数据持久化
+    volumes:
+      - ./data/configdb:/data/configdb
+      - ./data/db:/data/db
+    ports:
+      - "27017:27017"
+    restart: always
+    command: mongod --auth
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    networks:
+      - mongo
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    links:
+      - mongodb:mongodb
+    depends_on:
+      - mongodb
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_BASICAUTH_USERNAME: root
+      ME_CONFIG_BASICAUTH_PASSWORD: root
+    networks:
+      - mongo
+  yapi-web:
+    image: liuqingzheng/yapi:latest
+    container_name: yapi-web
+    ports:
+      - 3000:3000
+    environment:
+      - YAPI_ADMIN_ACCOUNT=yapi
+      - YAPI_ADMIN_PASSWORD=yapi
+      - YAPI_CLOSE_REGISTER=true
+      - YAPI_DB_SERVERNAME=mongodb
+      - YAPI_DB_PORT=27017
+      - YAPI_DB_DATABASE=yapi
+      - YAPI_MAIL_ENABLE=false
+      - YAPI_LDAP_LOGIN_ENABLE=false
+      - YAPI_PLUGINS=[]
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+    restart: unless-stopped
+
+# 自定义的网络名
+networks:
+  mongo:

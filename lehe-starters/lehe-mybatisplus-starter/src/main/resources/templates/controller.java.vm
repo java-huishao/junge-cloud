@@ -1,0 +1,92 @@
+package ${package.Controller};
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestMapping;
+import ${package.Entity}.${entity};
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import ${package.Service}.${table.serviceName};
+
+import org.springframework.transaction.annotation.Transactional;
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Slf4j
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@Transactional(rollbackFor = Exception.class)
+@RequestMapping("/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+@AllArgsConstructor
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass}<${table.serviceName},${entity}, String> {
+#else
+public class ${table.controllerName} {
+#end
+private final ${table.serviceName} ${entity}Service;
+/**
+     * 聚合id查询 业务性质
+     * 可能多表关联查询，一对多信息查询，复杂查询场景
+     * @return Result 返回结果 返回结果
+     */
+@GetMapping(value = "/get/{id}")
+public Result<${entity}> getById(@PathVariable(name = "id") String id){
+        return Result.success(${entity}Service.getById(id));
+        }
+
+/**
+     * 分页列表 业务性质 多表信息展示 自定义参数
+     *
+     * @param current 当前页数
+     * @param size 页码
+     * @return Result 返回结果 返回结果
+     */
+@GetMapping(value = "/pageList")
+public Result<IPage<${entity}>>page(@RequestParam(name = "current") Long current,@RequestParam(name = "size") Long size){
+        IPage<${entity}> page=new Page<>(current,size);
+        return Result.success(${entity}Service.page(page));
+        }
+/**
+     * 添加数据 业务性质
+     *
+     * @param entity 实体类
+     * @return Result 返回结果 返回结果
+     */
+@PostMapping(value = "/add")
+public Result<Boolean> add${entity}(@RequestBody ${entity} entity){
+        return Result.success(${entity}Service.save(entity));
+        }
+/**
+     * 修改数据 业务性质
+     *
+     * @return Result 返回结果
+     */
+@PostMapping(value = "/modify")
+public Result<Boolean> modify${entity}(@RequestBody ${entity} entity){
+        return Result.success(${entity}Service.updateById(entity));
+        }
+/**
+ * 删除一条数据 业务性质
+ *
+ * @return Result 返回结果
+ */
+@DeleteMapping(value = "/delById/{id}")
+public Result<Boolean> delById(@PathVariable(name = "id") String id){
+        return Result.success(${entity}Service.removeById(id));
+        }
+        }

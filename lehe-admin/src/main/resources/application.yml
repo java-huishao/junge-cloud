@@ -1,0 +1,142 @@
+#配置日志级别
+logging:
+  level:
+    com.lehe.admin: debug
+    com.lehe.starter.web: debug
+    com.baomidou.mybatisplus: debug
+    org.springframework.web: debug
+    # debug 级别打印sql语句，info级别 不打印
+    com.lehe.starter.mybatisplus: debug
+    cn.dev33.satoken: debug
+#spring配置
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB   #最大上传文件大小
+      max-request-size: 1024MB #批量最大请求大小
+  datasource:
+    url: jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database:lehe}?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&tinyInt1isBit=false&serverTimezone=Asia/Shanghai&useAffectedRows=true
+    username: ${mysql.username}
+    password: ${mysql.password}
+    initialSize: 1
+    maxActive: 20
+    minIdle: 3
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+    password: ${redis.password}
+  #  mvc:
+  #    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: true
+  # sa-token配置
+  sa-token:
+    # token名称 (同时也是cookie名称)
+    token-name: satoken
+    # token有效期，单位s 默认30天, -1代表永不过期
+    timeout: 2592000
+    # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+    activity-timeout: -1
+    # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+    allow-concurrent-login: true
+    # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+    is-share: false
+    # token风格
+    token-style: uuid
+jetcache:
+  statIntervalMinutes: 1
+  areaInCacheName: false
+  local:
+    default:
+      # 已支持可选：linkedhashmap、caffeine
+      type: linkedhashmap
+      # key转换器的全局配置，当前只有：fastjson, @see com.alicp.jetcache.support.FastjsonKeyConvertor
+      keyConvertor: fastjson
+      # 每个缓存实例的最大元素的全局配置，仅local类型的缓存需要指定
+      limit: 100
+      # jetcache2.2以上，以毫秒为单位，指定多长时间没有访问，就让缓存失效，当前只有本地缓存支持。0表示不使用这个功能
+      expireAfterAccessInMillis: 30000
+  remote:
+    default:
+      type: redis.lettuce
+      keyConvertor: fastjson
+      valueEncoder: java
+      valueDecoder: java
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: ${redis.host}
+      port: ${redis.port}
+      # 以毫秒为单位指定超时时间的全局配置
+      expireAfterWriteInMillis: 5000
+#mybatis-plus 配置
+mybatis-plus:
+  # 放在resource目录 classpath:/mapper/*Mapper.xml
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: com.lehe.*.entity
+  #枚举类扫描
+  type-enums-package: com.lehe.*.entity.enums
+  #全局配置
+  global-config:
+    #字段策略 0:"忽略判断",1:"非 NULL 判断",2:"非空判断"
+    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #刷新mapper 调试神器
+    refresh-mapper: true
+    #数据库大写下划线转换
+    capital-mode: true
+    #逻辑删除配置（下面3个配置）
+    # SQL 解析缓存，开启后多租户 @SqlParser 注解生效
+    sql-parser-cache: true
+    refresh: true
+  configuration:
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: com.lehe.starter.mybatisplus.MybatisPlusOutImpl
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+  check-config-location: true
+  type-handlers-package: com.lehe.starter.mybatisplus.typehandlers
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"    #监控所有端点，其中health和status是必须监控的
+        exclude: configprops    #排除对配置信息的监控，每次浏览这个节点的时候，
+        #数据库的链接就一直释放不掉，最后导致超时，因为配置信息的监控也不重要，
+        #就不再监控这个节点，以下为可监控的endpoint。可以根据需要有选择的进行监控。
+        #- health,status,env,metrics,dump,jolokia,info,
+        #configprops,trace,logfile,refresh,flyway,
+        #liquibase,heapdump,loggers,auditevents,hystrix.stream,activiti
+  metrics:
+    # 下面选项建议打开，以监控 http 请求的 P99/P95 等，具体的时间分布可以根据实际情况设置
+    distribution:
+      sla:
+        http:
+          server:
+            requests: 1ms,5ms,10ms,50ms,100ms,200ms,500ms,1s,5s
+    # 在 Prometheus 中添加特别的 Labels
+    tags:
+      # 必须加上对应的应用名，因为需要以应用的维度来查看对应的监控
+      application: ${spring.application.name}

@@ -1,0 +1,82 @@
+version: '3'
+services:
+  # 指定服务名称
+  lehe-admin:
+    # 指定服务使用的镜像
+    image: registry.cn-hangzhou.aliyuncs.com/lehe-cloud/lehe-admin:latest
+    restart: always
+    privileged: true
+    # 指定容器名称
+    container_name: lehe-admin
+    # 指定服务运行的端口
+    ports:
+      - 9050:9050
+      - 60150:60150
+    # 指定容器中需要挂载的文件
+    environment:
+      CONFIG_SERVER: ${CONFIG_SERVER}
+      CONFIG_NAMESPACE: ${CONFIG_NAMESPACE}
+      profiler.transport.grpc.collector.ip: ${PINPOINT_SERVER}
+      profiler.collector.ip: ${PINPOINT_SERVER}
+      JAVA_OPS: ${JAVA_OPS}
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /var/logs:/logs #将日志存储于宿主机的/var/logs 下
+
+  # 指定服务名称
+  lehe-trace:
+    # 指定服务使用的镜像
+    image: registry.cn-hangzhou.aliyuncs.com/lehe-cloud/lehe-trace:latest
+    restart: always
+    privileged: true
+    # 指定容器名称
+    container_name: lehe-trace
+    # 指定服务运行的端口
+    ports:
+      - 9010:9010
+    # 指定容器中需要挂载的文件
+    environment:
+      CONFIG_SERVER: ${CONFIG_SERVER}
+      CONFIG_NAMESPACE: ${CONFIG_NAMESPACE}
+      profiler.transport.grpc.collector.ip: ${PINPOINT_SERVER}
+      profiler.collector.ip: ${PINPOINT_SERVER}
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /var/logs:/logs #将日志存储于宿主机的/var/logs 下
+    network_mode: host
+  lehe-pay:
+    # 指定服务使用的镜像
+    image: registry.cn-hangzhou.aliyuncs.com/lehe-cloud/lehe-pay:latest
+    restart: always
+    privileged: true
+    # 指定容器名称
+    container_name: lehe-pay
+    # 指定服务运行的端口
+    ports:
+      - 9020:9020
+      - 9021:9021
+    # 指定容器中需要挂载的文件
+    environment:
+      CONFIG_SERVER: ${CONFIG_SERVER}
+      CONFIG_NAMESPACE: ${CONFIG_NAMESPACE}
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /var/logs:/logs #将日志存储于宿主机的/var/logs 下
+  lehe-gateway:
+    # 指定服务使用的镜像
+    image: registry.cn-hangzhou.aliyuncs.com/lehe-cloud/lehe-gateway:latest
+    restart: always
+    privileged: true
+    # 指定容器名称
+    container_name: lehe-gateway
+    # 指定服务运行的端口
+    ports:
+      - 8443:8443
+      - 8543:8543
+    # 指定容器中需要挂载的文件
+    environment:
+      CONFIG_SERVER: ${CONFIG_SERVER}
+      CONFIG_NAMESPACE: ${CONFIG_NAMESPACE}
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /var/logs:/logs #将日志存储于宿主机的/var/logs 下

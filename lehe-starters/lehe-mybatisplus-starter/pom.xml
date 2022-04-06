@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lehe</groupId>
+        <artifactId>lehe-starters</artifactId>
+        <version>0.0.1.RELEASE</version>
+    </parent>
+    <groupId>com.lehe</groupId>
+    <artifactId>lehe-mybatisplus-starter</artifactId>
+    <version>0.0.1.RELEASE</version>
+    <name>lehe-mybatisplus-starter</name>
+    <description>springboot fast boot project</description>
+    <packaging>jar</packaging>
+    <properties>
+        <java.version>1.8</java.version>
+        <mybatis-plus-generator.version>3.5.1</mybatis-plus-generator.version>
+        <jackson.version>2.9.2</jackson.version>
+        <diboot-core.version>2.4.0</diboot-core.version>
+
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.lehe</groupId>
+            <artifactId>lehe-annotations</artifactId>
+            <version>0.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lehe</groupId>
+            <artifactId>lehe-common-starter</artifactId>
+            <version>0.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <!--mysql依赖-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-core-spring-boot-starter</artifactId>
+            <version>${diboot-core.version}</version>
+        </dependency>
+        <!--代码生成配置-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <version>${mybatis-plus-generator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+        </dependency>
+    </dependencies>
+
+</project>

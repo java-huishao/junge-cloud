@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.lehe.starter.mybatisplus.MyMetaObjectHandler,\
+com.lehe.starter.mybatisplus.MybatisplusConfiguration

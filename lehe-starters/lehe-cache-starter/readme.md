@@ -1,0 +1,1 @@
+https://github.com/CandleDrums/base/blob/c47bf271ab49ff09a25f415a8ae6f5eb225df4d2/base-redis/src/main/java/com/cds/base/redis/cache/DefaultRedisCacheWriter.java

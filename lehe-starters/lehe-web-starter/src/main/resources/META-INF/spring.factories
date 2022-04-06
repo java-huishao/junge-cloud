@@ -1,0 +1,14 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.zhny.starter.web.CustomSpringWebMvcConfig,\
+com.zhny.starter.web.filter.CustomFilter,\
+com.zhny.starter.web.inteceptors.UserSessionInterceptor,\
+com.zhny.starter.web.inteceptors.IdempotencyInterceptor,\
+com.zhny.starter.web.properties.LeheBootProperties,\
+com.zhny.starter.web.config.ThreadPoolConfig,\
+com.zhny.starter.web.advice.ExceptionHandlerAdvice,\
+com.zhny.starter.web.advice.CustomRequestBodyAdvice,\
+com.zhny.starter.web.controller.CommonController,\
+com.zhny.starter.web.handler.LeheExceptionHandlerImpl,\
+com.zhny.starter.web.handler.TraceLogSender,\
+com.zhny.starter.web.config.UndertowHttp2Configuration,\
+com.zhny.starter.web.utils.SpringContextHolder

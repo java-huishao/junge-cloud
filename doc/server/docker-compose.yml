@@ -1,0 +1,82 @@
+version: '3'
+services:
+  nacos:
+    image: nacos/nacos-server
+    container_name: nacos
+    privileged: true
+    restart: always
+    environment:
+      PREFER_HOST_MODE: 1.15.4.73 #如果支持主机名可以使用hostname,否则使用ip，默认也是ip
+      SPRING_DATASOURCE_PLATFORM: mysql #数据源平台 仅支持mysql或不保存empty
+      MODE: standalone
+      MYSQL_SERVICE_HOST: 1.15.4.73
+      MYSQL_SERVICE_DB_NAME: nacos
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: farsight
+      NACOS_APPLICATION_PORT: 8848
+      JVM_XMS: 512m
+      JVM_MMS: 320m
+    ports:
+      - "8848:8848"
+  mysql:
+    restart: always
+    image: mysql
+    privileged: true
+    container_name: mysql
+    ports:
+      - 3306:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: 123456
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+      --max_allowed_packet=128M
+      --sql-mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./conf.d:/etc/mysql/conf.d
+      - ./logs:/logs
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    privileged: true
+    volumes:
+      - ./redis.conf:/etc/redis/redis.conf:rw
+      - ./data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    command:
+      redis-server /etc/redis/redis.conf --appendonly yes
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    privileged: true
+    ports:
+      - "9000:9000"
+    restart: always
+    command: server /data
+    environment:
+      MINIO_ACCESS_KEY: lehe
+      MINIO_SECRET_KEY: 12345678 #大于等于8位 todo 要改掉
+    logging:
+      options:
+        max-size: "200M" # 最大文件上传限制
+        max-file: "10"
+      driver: json-file
+    volumes:
+      - /var/dlp/data/minio/data:/data # 映射文件路径
+  sentinel:
+    image: matecloud/sentinel-dashboard:1.8.1
+    container_name: sentinel
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS= -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dsentinel.dashboard.auth.username=sentinel -Dsentinel.dashboard.auth.password=sentinel -Dserver.servlet.session.timeout=7200
+    ports:
+      - 8088:8080
+    restart: on-failure

@@ -1,0 +1,27 @@
+package ${package.ServiceImpl};
+
+import com.lehe.starter.mybatisplus.base.BaseMpServiceImpl;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import ${package.Entity}.${entity};
+import ${package.Service}.${table.serviceName};
+import ${package.Mapper}.${table.mapperName};
+/**
+ * <p>
+ * $!{table.comment} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Slf4j
+@Service
+@Transactional(rollbackFor = Exception.class)
+@AllArgsConstructor
+public class ${table.serviceImplName} extends BaseMpServiceImpl<${table.mapperName},${entity}> implements ${table.serviceName}{
+
+private ${table.mapperName} ${entity}Mapper;
+
+        }

@@ -1,0 +1,29 @@
+server:
+  port: 8443
+  undertow:
+    threads:
+      # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+      io: 8
+      # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+      worker: 64
+    # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
+    # 每块buffer的空间大小,越小的空间被利用越充分
+    buffer-size: 1024
+    # 是否分配的直接内存
+    direct-buffers: true
+spring:
+  application:
+    name: @project.artifactId@
+  cloud:
+    nacos:
+      config:
+        server-addr: ${CONFIG_SERVER:10.66.34.98}:8848 # 配置中心地址
+        namespace: ${CONFIG_NAMESPACE:f95e5cea-82b3-4f77-b765-5aba46a1b452}
+        enabled: true
+      discovery:
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+    sentinel:
+      transport:
+        dashboard: ${sentinel.transport.dashboard}
+    compatibility-verifier:
+      enabled: false

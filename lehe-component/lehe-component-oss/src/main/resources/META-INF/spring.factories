@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.zhny.starter.oss.UploadFileService,\
+com.zhny.starter.oss.minio.MinioConfig,\
+com.zhny.starter.oss.minio.MinioUtil

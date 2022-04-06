@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.zhny.starter.log.LogConfiguration
+org.springframework.context.ApplicationContextInitializer=\
+  com.zhny.starter.log.TransmitLocalMDCInitializer

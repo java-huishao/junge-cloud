@@ -1,0 +1,60 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    privileged: true
+    #数据持久化
+    volumes:
+      - ./data/configdb:/data/configdb
+      - ./data/db:/data/db
+    ports:
+      - "27017:27017"
+    restart: always
+    command: mongod --auth
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    networks:
+      - mongo
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    links:
+      - mongodb:mongodb
+    depends_on:
+      - mongodb
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_BASICAUTH_USERNAME: root
+      ME_CONFIG_BASICAUTH_PASSWORD: root
+    networks:
+      - mongo
+  yapi-web:
+    image: yapipro/yapi:latest
+    container_name: yapi
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config.json:/yapi/config.json
+    depends_on:
+      - mongodb
+    #第一次用这个初始化用户名密码
+    #command: "server/install.js"
+    #第二次用这个启动项目
+    command: "server/app.js"
+    networks:
+      - mongo
+    links:
+      - mongodb
+
+# 自定义的网络名
+networks:
+  mongo:

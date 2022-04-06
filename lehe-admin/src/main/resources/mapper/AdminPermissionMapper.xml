@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhny.admin.mapper.IAdminPermissionMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="MenuVo">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="path" property="path"/>
+        <result column="component" property="component"/>
+        <result column="parent_id" property="parentId"/>
+        <association property="meta" javaType="Meta">
+            <result column="title" property="title"/>
+            <result column="icon" property="icon"/>
+            <result column="hide_in_menu" property="hideInMenu"/>
+            <result column="show_always" property="showAlways"/>
+            <result column="not_cache" property="notCache"/>
+            <result column="access" property="access"/>
+            <result column="href" property="href"/>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+                ,
+            create_time,
+            update_time,
+            create_by,
+            update_by,
+            name,
+            path,
+            component,
+            icon,
+            title,
+            hidden,
+            redirect,
+            always_show,
+            enabled,
+            keepalived,
+            parent_id,
+            type,
+            btn_type,
+            btn_code,
+            sort,
+            level
+    </sql>
+
+    <select id="getPermissionByUserId" resultType="java.lang.String">
+        SELECT ap.path
+        FROM account_role ar
+                     LEFT JOIN account_role_permission arp ON ar.role_id = arp.role_id
+                     LEFT JOIN admin_permission ap ON arp.permission_id = ap.id
+        WHERE ap.type = 1
+          AND ar.account_id = #{id}
+        ORDER BY ap.id
+    </select>
+</mapper>
