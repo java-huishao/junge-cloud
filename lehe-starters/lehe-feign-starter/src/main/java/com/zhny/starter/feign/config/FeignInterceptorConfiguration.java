@@ -60,6 +60,7 @@ public class FeignInterceptorConfiguration {
                 if (StrUtil.isNotBlank(traceId)) {
                     requestTemplate.header(TraceConstant.TRACE_ID, traceId);
                 }
+
             }
         };
     }
